@@ -1,0 +1,70 @@
+{% extends 'near/base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<header>
+
+</header>
+<body>
+<br><br>
+
+
+<div class="row">
+    <div class="container col-md-6 col-md-offset-3">
+        <div class="card bg-dark">
+            <div class="card card-body">
+
+                <form action="" method="POST">
+
+                {% csrf_token %}
+
+                {{ form.emplacement | as_crispy_field }}
+                {{ form.latitude | as_crispy_field }}
+                {{ form.longitude | as_crispy_field }}
+
+                <hr>
+
+                <button class="btn btn-info" type="submit" name="Create">Enregistrer Coordonnées</button>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{{ f_contents }}
+
+<br><br>
+
+<div class="row">
+    <div class="container col-md-6 col-md-offset-3">
+        <div class="card bg-dark">
+            <div class="card card-body">
+                <table class="table table-sm">
+                    <tr>
+                        <th>Nom Emplacement</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                    </tr>
+
+                    {% for cdn in coordonnees %}
+                        <tr>
+                            <td>{{ cdn.emplacement }}</td>
+                            <td>{{ cdn.latitude }}</td>
+                            <td>{{ cdn.longitude }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+
+{% endblock content %}

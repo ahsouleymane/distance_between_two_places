@@ -1,0 +1,1 @@
+<class 'near.forms.coordonneesForm'>
