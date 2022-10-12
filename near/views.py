@@ -43,11 +43,9 @@ def home(request):
 
     pointA = (x_lat, x_lon)
 
-    # Destination coordinates
-    #d_lat = destination.latitude
-    #d_lon = destination.longitude
-
-    #pointB = (d_lat, d_lon)
+    geolocator = Nominatim(user_agent='near')
+    country, city, lat, lon = get_geo(ip_add)
+    location = geolocator.geocode(city)
 
     #### Get coordinates in file
 
@@ -95,14 +93,38 @@ def home(request):
     print("Number of element:\n")
     print(count)
 
+    
+    #### All distances calculation
+
+    listOfDistances = []
+    index = 0
+
+    while (index < len(listOfLocation) and len(listOfLocation) == len(listOfLat) and 
+        len(listOfLocation) == len(listOfLon) and len(listOfLat) == len(listOfLon)):
+
+        d_lat = listOfLat[index]
+        d_lon = listOfLon[index]
+
+        pointB = (d_lat, d_lon)
+
+        distance = round(geodesic(pointA, pointB).km, 2)
+
+        listOfDistances.append(listOfLocation[index])
+        listOfDistances.append(distance)
+
+        index += 1
+        
     print("\n")
-       
+    print("List of distances for all location:\n")
+    print(listOfDistances)  
 
-    #### Distance calculation
+    print("\n") 
 
-    #distance = round(geodesic(pointA, pointB).km, 2)
+    m = folium.Map(width=1600, height=600, location=get_center_coordinates(x_lat, x_lon), zoom_start=14)
 
-    m = folium.Map(width=1600, height=600, location=[13.521470583129599, 2.1192207657072264], zoom_start=14)
+    # Location marker
+    folium.Marker([x_lat, x_lon], tooltip='click here for more', popup=city['city'], 
+                    icon=folium.Icon(color='purple')).add_to(m)
 
     m = m._repr_html_()
 

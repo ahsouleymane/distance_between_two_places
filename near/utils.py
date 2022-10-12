@@ -1,7 +1,12 @@
+from django.contrib.gis.geoip2 import GeoIP2
 
 
-
-
+def get_geo(ip):
+    g = GeoIP2()
+    country = g.country(ip)
+    city = g.city(ip)
+    lat, lon = g.lat_lon(ip)
+    return country, city, lat, lon
 
 def trouver_addresse_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -11,7 +16,7 @@ def trouver_addresse_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
-def centre_coordonnees(latA, lonA, latB=None, lonB=None):
+def get_center_coordinates(latA, lonA, latB=None, lonB=None):
     cord = (latA, lonA)
     if latB:
         cord = [(latA + latB)/2, (lonA + lonB)/2]
