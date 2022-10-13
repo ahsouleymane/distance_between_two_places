@@ -49,16 +49,22 @@ def home(request):
 
     #### Get coordinates in file
 
-    listOf = []
-    listOfLocation = []
-    listOfLat = []
-    listOfLon = []
+    listOf = [] # List of all elements
+    listOfLocation = [] # List of all location
+    listOfLat = []  # List of all latitude
+    listOfLon = [] # List of all longitude
 
     with open('coordonnees.txt', 'r') as file:
-        count = 1
-        locationIndex = count + 1
-        latIndex = count + 2
-        lonIndex = count + 3
+        count = 1   # Initialisation of variable that iterates through principal list
+        locationIndex = count + 1   # Initialization of the variable that iterates the locations
+        latIndex = count + 2    # Initialization of the variable that iterates the latitudes
+        lonIndex = count + 3    # Initialization of the variable that iterates the longitudes
+
+        """ these parts make it possible to take precise lines in a file and to
+        add them to various lists created for its lines. When the count variable
+        that traverses the main list in which all the elements are found has the 
+        same number as the variable that traverses one of the lists, then the line 
+        at this number is added to this list. """
         
         for line in file.readlines():
             listOf.append(line)
@@ -97,20 +103,22 @@ def home(request):
     #### All distances calculation
 
     listOfDistances = []
-    index = 0
+    index = 0   # Variable that iterates through the list
 
     while (index < len(listOfLocation) and len(listOfLocation) == len(listOfLat) and 
         len(listOfLocation) == len(listOfLon) and len(listOfLat) == len(listOfLon)):
 
+        # Initialisation of the list of latitudes and longitudes 
         d_lat = listOfLat[index]
         d_lon = listOfLon[index]
 
         pointB = (d_lat, d_lon)
 
+        # calculate distance
         distance = round(geodesic(pointA, pointB).km, 2)
 
-        listOfDistances.append(listOfLocation[index])
-        listOfDistances.append(distance)
+        listOfDistances.append(listOfLocation[index])   # Addition of the location in the list of distances
+        listOfDistances.append(distance)    # Addition the distance of this location
 
         index += 1
         
