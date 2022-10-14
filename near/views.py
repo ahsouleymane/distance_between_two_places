@@ -83,6 +83,8 @@ def home(request):
 
             count += 1
 
+        file.close()
+
     print("\n")
     print("List of:\n")
     print(listOf)
