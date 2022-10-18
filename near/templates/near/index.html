@@ -18,9 +18,14 @@
 
                 {% csrf_token %}
 
-                Destination: {{ destination }}
+                {% for distance in listOfDistances %}
 
-                Distance: {{ distance }}
+                {{ distance }}
+
+                <hr>
+                
+                {% endfor %}
+
 
                 
             </div>

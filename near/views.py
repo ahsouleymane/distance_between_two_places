@@ -119,8 +119,8 @@ def home(request):
         # calculate distance
         distance = round(geodesic(pointA, pointB).km, 2)
 
-        listOfDistances.append(listOfLocation[index])   # Addition of the location in the list of distances
-        listOfDistances.append(distance)    # Addition the distance of this location
+        listOfDistances.append(listOfLocation[index] + ': ' + str(distance) + ' Km')   # Addition of the location and distance in the list of distances
+        #listOfDistances.append(str(distance) + ' Km')    # Addition the distance of this location
 
         index += 1
         
@@ -128,7 +128,7 @@ def home(request):
     print("List of distances for all location:\n")
     print(listOfDistances)  
 
-    print("\n") 
+    print("\n")
 
     m = folium.Map(width=1600, height=600, location=get_center_coordinates(x_lat, x_lon), zoom_start=14)
 
@@ -138,7 +138,7 @@ def home(request):
 
     m = m._repr_html_()
 
-    context = {'map': m}
+    context = {'map': m, 'listOfDistances': listOfDistances}
     return render(request, 'near/index.html', context)
 
 # Save coordinates in database and file
