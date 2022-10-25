@@ -47,88 +47,56 @@ def home(request):
     country, city, lat, lon = get_geo(ip_add)
     location = geolocator.geocode(city)
 
-    #### Get coordinates in file
-
-    listOf = [] # List of all elements
-    listOfLocation = [] # List of all location
-    listOfLat = []  # List of all latitude
-    listOfLon = [] # List of all longitude
-
-    with open('coordonnees.txt', 'r') as file:
-        count = 1   # Initialisation of variable that iterates through principal list
-        locationIndex = count + 1   # Initialization of the variable that iterates the locations
-        latIndex = count + 2    # Initialization of the variable that iterates the latitudes
-        lonIndex = count + 3    # Initialization of the variable that iterates the longitudes
-
-        """ these parts make it possible to take precise lines in a file and to
-        add them to various lists created for its lines. When the count variable
-        that traverses the main list in which all the elements are found has the 
-        same number as the variable that traverses one of the lists, then the line 
-        at this number is added to this list. """
-        
-        for line in file.readlines():
-            listOf.append(line)
-
-            if count == locationIndex:
-                listOfLocation.append(line)
-                locationIndex = count + 4
-
-            if count == latIndex:
-                listOfLat.append(line)
-                latIndex = count + 4
-
-            if count == lonIndex:
-                listOfLon.append(line)
-                lonIndex = count + 4
-
-            count += 1
-
-        file.close()
-
-    print("\n")
-    print("List of:\n")
-    print(listOf)
-    print("\n")
-    print("List of location:\n")
-    print(listOfLocation)
-    print("\n")
-    print("List of latitude:\n")
-    print(listOfLat)
-    print("\n")
-    print("List of longitude:\n")
-    print(listOfLon)
-    print("\n")
-    print("Number of element:\n")
-    print(count)
-
     
-    #### All distances calculation
+    number_of_location = Coordonnees.objects.all().count()
+    #print('Number of location: ', number_of_location)
 
-    listOfDistances = []
-    index = 0   # Variable that iterates through the list
+    locations = []
 
-    while (index < len(listOfLocation) and len(listOfLocation) == len(listOfLat) and 
-        len(listOfLocation) == len(listOfLon) and len(listOfLat) == len(listOfLon)):
+    parcourt = 0
+    while parcourt < number_of_location:
 
-        # Initialisation of the list of latitudes and longitudes 
-        d_lat = listOfLat[index]
-        d_lon = listOfLon[index]
+        locations = Coordonnees.objects.values_list('emplacement', flat=True)
+        parcourt += 1
+
+    #print(locations)
+
+
+    latitudes = []
+    longitudes = []
+
+    parcourt = 0
+    while parcourt < number_of_location:
+
+        latitudes = Coordonnees.objects.values_list('latitude', flat=True)
+        longitudes = Coordonnees.objects.values_list('longitude', flat=True)
+
+        parcourt += 1
+
+    #print(latitudes)
+    #print(longitudes)
+
+    distances = []
+
+    parcourt = 0
+    while parcourt < number_of_location and parcourt < len(latitudes) and parcourt < len(longitudes):
+        
+        d_lat = latitudes[parcourt]
+        d_lon = longitudes[parcourt]
 
         pointB = (d_lat, d_lon)
 
         # calculate distance
         distance = round(geodesic(pointA, pointB).km, 2)
 
-        listOfDistances.append(listOfLocation[index] + ': ' + str(distance) + ' Km')   # Addition of the location and distance in the list of distances
-        #listOfDistances.append(str(distance) + ' Km')    # Addition the distance of this location
+        distances.append(locations[parcourt] + ': ' + str(distance) + ' Km')
 
-        index += 1
-        
-    print("\n")
-    print("List of distances for all location:\n")
-    print(listOfDistances)  
+        parcourt += 1
+
+
 
     print("\n")
+    print("List of distances for all location and distances:\n")
 
     m = folium.Map(width=1600, height=600, location=get_center_coordinates(x_lat, x_lon), zoom_start=14)
 
@@ -138,7 +106,7 @@ def home(request):
 
     m = m._repr_html_()
 
-    context = {'map': m, 'listOfDistances': listOfDistances}
+    context = {'map': m, 'distances': distances}
     return render(request, 'near/index.html', context)
 
 # Save coordinates in database and file
